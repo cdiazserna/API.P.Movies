@@ -61,9 +61,11 @@ namespace API.P.Movies.Repository
 
         public async Task<Category> GetCategoryAsync(int id)
         {
-            return await _context.Categories
+            var category = await _context.Categories
                 .AsNoTracking()
                 .FirstOrDefaultAsync(c => c.Id == id);
+
+            return category;
         }
 
         public async Task<bool> UpdateCategoryAsync(Category category)
