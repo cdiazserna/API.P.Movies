@@ -51,11 +51,6 @@ namespace API.P.Movies.Services
             return categoryDto;
         }
 
-        public async Task<bool> DeleteCategoryAsync(int id)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<CategoryDto> GetCategoryAsync(int id)
         {
             var category = await _categoryRepository.GetCategoryAsync(id); //Llamo al método del repositorio
@@ -100,6 +95,27 @@ namespace API.P.Movies.Services
             }
 
             return _mapper.Map<CategoryDto>(existingCategory);
+        }
+
+        public async Task<bool> DeleteCategoryAsync(int id)
+        {
+            //Verificar si la categoría existe
+            var existingCategory = await _categoryRepository.GetCategoryAsync(id);
+
+            if (existingCategory == null)
+            {
+                throw new InvalidOperationException($"No se encontró la categoría con Id {id}");
+            }
+
+            //Borrar la categoría en la base de datos
+            var categoryDeleted = await _categoryRepository.DeleteCategoryAsync(id);
+
+            if (!categoryDeleted)
+            {
+                throw new InvalidOperationException("Ocurrió un error al actualizar la categoría");
+            }
+
+            return categoryDeleted;
         }
     }
 }
